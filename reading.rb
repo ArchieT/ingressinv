@@ -240,7 +240,20 @@ module Reading
 	end
 
 	def interpret_item_kind(kind)
-		# if %r{/^
+		if %r{/^(?<what>[rxuq])(?<level>[1-8])$/} =~ kind
+			level = Integer(level)
+			case what
+			when 'r'
+				Resonator.new(level)
+			when 'x'
+				XMP.new(level)
+			when 'u'
+				UltraStrike.new(level)
+			when 'q'
+				PowerCube.new(level)
+			end
+		# elsif
+		end
 	end
 
 	def read_one_contained(one)
