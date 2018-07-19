@@ -239,7 +239,15 @@ module Reading
 		end
 	end
 
-	def interpret_item_kind(kind); end
+	def interpret_item_kind(kind)
+		# if %r{/^
+	end
+
+	def read_one_contained(one)
+		raise 'there is no colon separating count' unless
+			%r{/^(?<kind>[a-z][a-z1-8_\-+]):(?<count>\d\d?\d?)/} =~ one
+		interpret_item_kind(kind) * Integer(count)
+	end
 
 	def read_cont(cont)
 		cont.split(',').collect { |x| interpret_item_kind x }
