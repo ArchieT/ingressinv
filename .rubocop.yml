@@ -1,0 +1,12 @@
+Style/Tab:
+        Enabled: false
+Layout/IndentationWidth:
+        Enabled: false
+Layout/CommentIndentation:
+        Enabled: false
+Style/Documentation:
+        Enabled: false
+Metrics:
+        Enabled: false
+Naming/UncommunicativeMethodParamName:
+        Enabled: false
