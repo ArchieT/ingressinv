@@ -239,9 +239,7 @@ module Reading
 		end
 	end
 
-	def interpret_item_kind(kind)
-	# if
-	end
+	def interpret_item_kind(kind); end
 
 	def read_cont(cont)
 		cont.split(',').collect { |x| interpret_item_kind x }
