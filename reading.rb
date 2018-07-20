@@ -24,7 +24,7 @@ class Item
   end
 
   def +(other)
-    clone.add! other
+    dup.add! other
   end
 
   def multiplicate!(other)
@@ -36,7 +36,7 @@ class Item
   end
 
   def *(other)
-    clone.multiplicate! other
+    dup.multiplicate! other
   end
 
   def encapsulable
