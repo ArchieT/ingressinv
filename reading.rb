@@ -1,8 +1,12 @@
 # coding: utf-8
 class Item
-  attr_accessor :count
+  attr_reader :count
   def initialize(*)
     @count = 1
+  end
+
+  def count=(newcount)
+    @count = Integer(newcount)
   end
 
   def same(_)
@@ -45,6 +49,10 @@ class Item
 
   def itemline
     "#{self.itemkind_string}\t#{self.count}"
+  end
+
+  def itemcont
+    "#{self.itemkind_string}:#{self.count}"
   end
 end
 RARITYDICTIONARYTOLINE = {common: 'c', rare: 'r', veryrare: 'vr'}.freeze
@@ -204,6 +212,7 @@ class FlipVirus < Item
     type == y.type && @virustype == y.virustype
   end
 end
+
 class LeveledItem < Item
   attr_reader :level
   TYPES = %i[resonator xmp ultrastrike].freeze
@@ -218,6 +227,10 @@ class LeveledItem < Item
   def same(y)
     type == y.type && @level == y.level
   end
+
+  def itemkind_string
+    "#{kind_char}#{level}"
+  end
 end
 class Bomb < LeveledItem
   TYPES = %i[xmp ultrastrike].freeze
@@ -230,6 +243,10 @@ class XMP < Bomb
   def type
     :xmp
   end
+
+  def kind_char
+    'x'
+  end
 end
 class UltraStrike < Bomb
   def initialize(*)
@@ -239,6 +256,10 @@ class UltraStrike < Bomb
   def type
     :ultrastrike
   end
+
+  def kind_char
+    'u'
+  end
 end
 class Resonator < LeveledItem
   def initialize(*)
@@ -247,7 +268,24 @@ class Resonator < LeveledItem
   def type
     :resonator
   end
+  
+  def kind_char
+    'r'
+  end
 end
+
+def level_to_string(lvl)
+  if (1..8).cover? lvl
+    String(lvl)
+  else case lvl
+       when :circlek
+         "cirk"
+       when :lawson
+         "laws"
+       end
+  end
+end
+
 class PowerCube < Item
   attr_reader :level
   LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, :circlek, :lawson].freeze
@@ -264,6 +302,14 @@ class PowerCube < Item
 
   def same(y)
     type == y.type && @level == y.level
+  end
+
+  def kind_char
+    'q'
+  end
+
+  def itemkind_string
+    "#{kind_char}#{level_to_string level}"
   end
 end
 class LinkAmping < Item
@@ -344,9 +390,9 @@ def alltrue(arr)
   arr.reduce(true) { |acc, that| acc && that }
 end
 class Capsuling < Item
-  attr_writer :id
-  attr_writer :volume
-  attr_writer :contains
+  attr_accessor :id
+  attr_accessor :volume
+  attr_accessor :contains
   KINDS = %i[capsule quantum keylocker].freeze
   def initialize(id = nil, volume = 0, contains = [])
     super
@@ -389,6 +435,25 @@ class Capsuling < Item
   def encapsulable
     false
   end
+
+  def container_string
+    @contains
+      .collect { |x| x.itemcont }.join(',')
+  end
+
+  def itemkind_string
+    "cap_#{itemkind_letter}"
+  end
+
+  def itemline
+    kind = itemkind_string
+    raise "multiple of same id wtf (count: #{count}, id: #{@id})" if @count>1 and !(['', nil].include? @id)
+    if @count==1 && (@volume.nonzero? || @contains.count.nonzero? || !(['', nil].include? @id))
+      "#{kind}\t#{id}\t#{volume}/#{container_string}"
+    else
+      "#{kind}\t#{count}"
+    end
+  end
 end
 class JustCapsule < Capsuling
   def initialize(*)
@@ -398,6 +463,10 @@ class JustCapsule < Capsuling
   def kind
     :capsule
   end
+
+  def itemkind_letter
+    @id==nil ? 'e' : '_'
+  end
 end
 class QuantumCapsule < JustCapsule
   def initialize(*)
@@ -406,6 +475,10 @@ class QuantumCapsule < JustCapsule
 
   def kind
     :quantum
+  end
+
+  def itemkind_letter
+    "q#{@id==nil ? 'e' : ''}"
   end
 end
 class KeyLocker < Capsuling
@@ -426,11 +499,15 @@ class KeyLocker < Capsuling
     super
     check_if_contains_just_keys
   end
+
+  def itemkind_letter
+    "k#{@id==nil ? 'e' : ''}"
+  end
 end
 
 def rarity_parse(rarity)
   case rarity
-  when "c"
+  when 'c'
     return :common
   when 'r'
     return :rare
@@ -441,18 +518,19 @@ def rarity_parse(rarity)
 end
 
 def interpret_item_kind(kind)
-  if %r{\A(?<what>[rxuq])(?<level>[1-8])\z} =~ kind
+  if %r{\A(?<what>(r|x|u|q))(?<level>[1-8])\z} =~ kind
     level = Integer(level)
     case what
     when 'r'
-      Resonator.new(level)
+      return Resonator.new(level)
     when 'x'
-      XMP.new(level)
+      return XMP.new(level)
     when 'u'
-      UltraStrike.new(level)
+      return UltraStrike.new(level)
     when 'q'
-      PowerCube.new(level)
+      return PowerCube.new(level)
     end
+    raise "bad rxuq: -#{what}-lvl#{level}-"
   elsif %r{\Aq(?<level>(cirk|laws))\z} =~ kind
     PowerCube.new case level
                   when 'cirk'
@@ -487,6 +565,10 @@ def interpret_item_kind(kind)
     FAT.new :forceamp
   elsif kind == 't'
     FAT.new :turret
+  elsif kind == 'ada'
+    FlipVirus.new :ada
+  elsif kind == 'jarv'
+    FlipVirus.new :jarvis
   elsif %r{\Ak_(?<keykind>(souv|ther|from))\z} =~ kind
     Key.new case keykind
             when 'souv'
@@ -519,12 +601,13 @@ def interpret_item_kind(kind)
     when '_', 'e'
       JustCapsule.new id
     end
+  else raise "nie damy nila, dostaliśmy «#{kind}»"
   end
 end
 
 def read_one_contained(one)
-  raise 'there is no colon separating count' unless
-    %r{\A(?<kind>[a-z][a-z1-8_\-+]):(?<count>\d\d?\d?)\z} =~ one
+  raise "there is no colon separating count in «#{one}»" unless
+    %r{\A(?<kind>[a-z][a-z1-8_\-+]{1,7}):(?<count>\d\d?\d?)\z} =~ one
   interpret_item_kind(kind).multiplicate!(Integer(count)).freeze
 end
 
@@ -549,7 +632,7 @@ def read_line(line)
   elsif t[1] =~ %r{\A\h{8}\z}
     itemkind.id = t[1]
     if t.count >= 3 &&
-       t[2] =~ %r{\A(\d\d?\d?\/)?([a-z][a-z1-8_\-+]:\d\d?\d?,?)+\z}
+       t[2] =~ %r{\A(\d\d?\d?\/)?([a-z][a-z1-8_\-+]{1,7}:\d\d?\d?,?)+\z}
       volume, contains = read_caps t[2]
       itemkind.volume = volume
       itemkind.contains = contains
