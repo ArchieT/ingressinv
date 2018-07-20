@@ -239,6 +239,18 @@ module Reading
 		end
 	end
 
+	def rarity_parse(str)
+		case str
+		when 'c'
+			:common
+		when 'r'
+			:rare
+		when 'vr'
+			:veryrare
+		end
+		raise "bad rarity: #{str}"
+	end
+
 	def interpret_item_kind(kind)
 		if %r{/^(?<what>[rxuq])(?<level>[1-8])$/} =~ kind
 			level = Integer(level)
@@ -252,7 +264,16 @@ module Reading
 			when 'q'
 				PowerCube.new(level)
 			end
-		# elsif
+		elsif %r{/^(?<rarity>(c|r|vr))(?<what>(sh|hs|mh))$/} =~ kind
+			rarity = rarity_parse rarity
+			case what
+			when 'sh'
+				Shield.new(rarity)
+			when 'hs'
+				HeatSink.new(rarity)
+			when 'mh'
+				MultiHack.new(rarity)
+			end
 		end
 	end
 
