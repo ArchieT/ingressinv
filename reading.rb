@@ -218,7 +218,7 @@ module Reading
     @volume = 0
     @contains = []
     KINDS = %i[capsule quantum keylocker].freeze
-    def initialize(id = '', volume = 0, contains = [])
+    def initialize(id = nil, volume = 0, contains = [])
       @id = id
       @volume = volume
       @contains = contains
@@ -266,7 +266,16 @@ module Reading
 
     def initialize(id = '', volume = 0, contains = [])
       super
-      raise 'not all are keys' unless alltrue(contains.collect { |x| x.type == :key })
+      raise 'not all are keys' unless check_if_contains_just_keys
+    end
+
+    def check_if_contains_just_keys
+      alltrue(contains.collect { |x| x.type == :key })
+    end
+
+    def check_if_contains_just_items
+      super
+      check_if_contains_just_keys
     end
   end
 
@@ -347,6 +356,20 @@ module Reading
                      when '-'
                        :minus
                      end
+    elsif %r{/^cap_(?<captype>(qe|ke|[kq_e]))$/} =~ kind
+      id = ''
+      case captype[-1]
+      when 'e'
+        id = nil
+      end
+      case captype[0]
+      when 'q'
+        QuantumCapsule.new id
+      when 'k'
+        KeyLocker.new id
+      when '_', 'e'
+        JustCapsule.new id
+      end
     end
   end
 
