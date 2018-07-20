@@ -567,6 +567,10 @@ class KeyLocker < Capsuling
   def itemkind_letter
     "k#{@id==nil ? 'e' : ''}"
   end
+
+  def mass
+    @count
+  end
 end
 
 def rarity_parse(rarity)
