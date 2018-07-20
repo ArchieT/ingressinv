@@ -103,6 +103,11 @@ class RarityItem < Item
   def same(y)
     type == y.type && rarity == y.rarity
   end
+
+  def itemkind_string
+    check_rarity_right
+    return "#{RARITYDICTIONARYTOLINE[@rarity]}#{itemkind_letter}"
+  end
 end
 class HackMod < RarityItem
   TYPES = %i[heatsink multihack].freeze
@@ -115,6 +120,10 @@ class HeatSink < HackMod
   def type
     :heatsink
   end
+
+  def itemkind_letter
+    "hs"
+  end
 end
 class MultiHack < HackMod
   def initialize(*)
@@ -123,6 +132,10 @@ class MultiHack < HackMod
 
   def type
     :multihack
+  end
+
+  def itemkind_letter
+    "mh"
   end
 end
 class Transmuter < Item
@@ -175,6 +188,10 @@ class PortalFracker < NiaItem
   def same(y)
     type == y.type
   end
+
+  def itemkind_string
+    'pfr'
+  end
 end
 class Beacon < NiaItem
   attr_reader :beacontype
@@ -193,6 +210,10 @@ class Beacon < NiaItem
   def same(y)
     type == y.type && @beacontype == y.beacontype
   end
+
+  def itemkind_string
+    "bea#{beacontype==:niantic ? 'nia' : '???'}"
+  end
 end
 class FlipVirus < Item
   attr_reader :virustype
@@ -210,6 +231,13 @@ class FlipVirus < Item
 
   def same(y)
     type == y.type && @virustype == y.virustype
+  end
+
+  def itemkind_string
+    case virustype
+    when :jarvis; "jarv"
+    when :ada; "ada"
+    end
   end
 end
 
@@ -323,6 +351,10 @@ class LinkAmp < LinkAmping
   def type
     :linkamp
   end
+
+  def itemkind_string
+    "la"
+  end
 end
 class SoftBankUltraLink < LinkAmping
   def initialize(*)
@@ -331,6 +363,10 @@ class SoftBankUltraLink < LinkAmping
 
   def type
     :softbankultralink
+  end
+
+  def itemkind_string
+    "sbul"
   end
 end
 class FAT < Item
@@ -344,6 +380,15 @@ class FAT < Item
 
   def type
     :fat
+  end
+
+  def itemkind_string
+    case fattype
+    when :forceamp
+      "fa"
+    when :turret
+      "t"
+    end
   end
 end
 class Key < Item
@@ -363,6 +408,21 @@ class Key < Item
   def same(y)
     type == y.type && @keykind == y.keykind
   end
+
+  def keykind_letter
+    case keykind
+    when :there
+      "ther"
+    when :from
+      "from"
+    when :souvenir
+      "souv"
+    end
+  end
+
+  def itemkind_string
+    "k_#{keykind_letter}"
+  end
 end
 class OtherSouvenir < Item
   attr_reader :description
@@ -377,6 +437,10 @@ class OtherSouvenir < Item
 
   def same(other)
     type == other.type && @description == other.description
+  end
+
+  def itemkind_string
+    "o_souv"
   end
 end
 class VolumeDoesntMatchContains < StandardError
