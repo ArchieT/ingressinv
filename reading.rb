@@ -9,19 +9,25 @@ module Reading
 			@count
 		end
 
-		def +(other)
+		def add!(other)
 			raise 'not same' unless same(other)
-			z = clone
-			z.count += other.count
-			z
+			@count += other.count
+			self
+		end
+
+		def +(other)
+			clone.add! other
+		end
+
+		def multiplicate!(other)
+			raise 'not number 0..2000' unless (0..2000).cover? other
+			raise 'more than 2000' unless other.between(0, 2000 / @count)
+			@count *= other
+			self
 		end
 
 		def *(other)
-			raise 'not number 0..2000' unless (0..2000).cover? other
-			raise 'more than 2000' unless other.between(0, 2000 / @count)
-			z = clone
-			z.count = @count * other
-			z
+			clone.multiplicate! other
 		end
 
 		def encapsulable
@@ -187,6 +193,16 @@ module Reading
 			@type == y.type && @keykind == y.keykind
 		end
 	end
+	class OtherSouvenir < Item
+		@type = :othersouvenir
+		def initialize(description)
+			@description = description
+		end
+
+		def same(other)
+			@type == other.type && @description == other.description
+		end
+	end
 	class VolumeDoesntMatchContains < StandardError
 		def initialize; end
 
@@ -208,8 +224,23 @@ module Reading
 			@contains = contains
 			raise 'contains is not an array' unless contains.is_a?(Array)
 			raise 'volume is not between 0 and 100' unless (0..100).cover? volume
-			raise VolumeDoesntMatchContains	unless volume == contains.count
+			check_if_contains_just_items
+			check_volume_match
+		end
+
+		def check_if_contains_just_items
 			raise 'not all are items' unless alltrue(contains.collect { |x| x.same(x) })
+		end
+
+		def volume_match?
+			@contains
+				.collect(&:count)
+				.reduce(0) { |a, n| a + n } == @volume
+		end
+
+		def check_volume_match
+			check_if_contains_just_items
+			raise VolumeDoesntMatchContains unless volume_match?
 		end
 
 		def same(y)
@@ -274,33 +305,59 @@ module Reading
 			when 'mh'
 				MultiHack.new(rarity)
 			end
+		elsif kind == 'axa'
+			Shield.new(:axa)
+		elsif kind == 'pfr'
+			PortalFracker.new
+		elsif %r{/^bea(?<beacon>nia)$/} =~ kind
+			Beacon.new case beacon
+			           when 'nia'
+			          	:niantic
+			           end
+		elsif kind == 'sbul'
+			SoftBankUltraLink.new
+		elsif kind == 'la'
+			LinkAmp.new
+		elsif kind == 'fa'
+			FAT.new :forceamp
+		elsif kind == 't'
+			FAT.new :turret
+		elsif %r{/k_(?<keykind>(souv|ther|from))$/} =~ kind
+			Key.new case keykind
+			        when 'souv'
+			        	:souvenir
+			        when 'ther'
+			        	:there
+			        when 'from'
+			        	:from
+			        end
 		end
 	end
 
 	def read_one_contained(one)
 		raise 'there is no colon separating count' unless
 			%r{/^(?<kind>[a-z][a-z1-8_\-+]):(?<count>\d\d?\d?)/} =~ one
-		interpret_item_kind(kind) * Integer(count)
+		interpret_item_kind(kind).multiplicate!(Integer(count)).freeze
 	end
 
 	def read_cont(cont)
-		cont.split(',').collect { |x| interpret_item_kind x }
+		cont.split(',').freeze.collect { |x| read_one_contained x }.freeze
 	end
 
 	def read_caps(caps)
-		l = caps.split('/')
-		[Integer(l[0]), read_cont(l[1])]
+		l = caps.split('/').freeze
+		[Integer(l[0]), read_cont(l[1])].freeze
 	end
 
 	def read_line(line)
-		t = line.split("\t")
+		t = line.split("\t").freeze
 		return nil if t.count.zero?
 		raise 'tylko jeden wut' if t.count == 1
 		# if t.count >= 2
 		itemkind = interpret_item_kind t[0]
 		if t[1] =~ %r{/^\d{1,4}$/}
 			count = t[1]
-			return itemkind * count
+			return itemkind.multiplicate!(count).freeze
 		elsif t[1] =~ %r{/^\h{8}$/}
 			itemkind.id = t[1]
 			if t.count >= 3 &&
@@ -309,12 +366,12 @@ module Reading
 				itemkind.volume = volume
 				itemkind.contains = contains
 			end
-			return itemkind
+			return itemkind.freeze
 		end
 	end
 
 	def read_from(filename)
 		t, *e = IO.readlines(filename)
-		[Integer(t), e.collect { |x| read_line x }]
+		[Integer(t), e.collect { |x| read_line x }].freeze
 	end
 end
