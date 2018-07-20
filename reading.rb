@@ -295,6 +295,13 @@ module Reading
       when 'q'
         PowerCube.new(level)
       end
+    elsif %r{/^q(?<level>(cirk|laws))$/} =~ kind
+      PowerCube.new case level
+                    when 'cirk'
+                      :circlek
+                    when 'laws'
+                      :lawson
+                    end
     elsif %r{/^(?<rarity>(c|r|vr))(?<what>(sh|hs|mh))$/} =~ kind
       rarity = rarity_parse rarity
       case what
@@ -322,7 +329,7 @@ module Reading
       FAT.new :forceamp
     elsif kind == 't'
       FAT.new :turret
-    elsif %r{/k_(?<keykind>(souv|ther|from))$/} =~ kind
+    elsif %r{/^k_(?<keykind>(souv|ther|from))$/} =~ kind
       Key.new case keykind
               when 'souv'
                 :souvenir
@@ -331,6 +338,15 @@ module Reading
               when 'from'
                 :from
               end
+    elsif %r{/^(?<desc>o_souv)$} =~ kind
+      OtherSouvenir.new desc
+    elsif %r{/^ito(?<itotype>[+\-])$/} =~ kind
+      Transmuter.new case itotype
+                     when '+'
+                       :plus
+                     when '-'
+                       :minus
+                     end
     end
   end
 
