@@ -88,6 +88,7 @@ class Shield < Item
   end
 end
 class RarityItem < Item
+  attr_reader :rarity
   RARITIES = %i[common rare veryrare].freeze
 
   def initialize(rarity)
