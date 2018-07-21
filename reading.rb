@@ -477,10 +477,18 @@ class Capsuling < Item
     raise 'not all are items' unless alltrue(@contains.collect { |x| x.same(x) })
   end
 
-  def volume_match?
+  def real_volume_calculation
     @contains
       .collect(&:count)
-      .reduce(0) { |a, n| a + n } == @volume
+      .reduce(0) { |a, n| a + n }
+  end
+
+  def real_volume_calculation_and_whether_match
+    return real_volume_calculation, real_volume_calculation == @volume
+  end
+
+  def volume_match?
+    real_volume_calculation_and_whether_match[1]
   end
 
   def check_volume_match
