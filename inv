@@ -1,41 +1,35 @@
-1987
+1996
 pfr	1
 beania	1
-r2	1
-r7	8
-r8	20
-x6	35
-x7	158
-x8	80
-u1	5
-u4	6
-u5	6
-u6	1
-u8	13
-csh	85
+r1	1
+r4	1
+r5	1
+r7	7
+r8	7
+x7	132
+x8	480
+csh	67
 rsh	1
-sbul	40
-rhs	9
+la	1
+sbul	7
+chs	1
 cmh	1
-rmh	66
-fa	2
-t	1
-q1	2
-q2	1
-q3	2
-q4	2
-q8	26
+rmh	10
+fa	3
+t	3
+q3	3
+q4	1
+q8	206
 cap_k	bfa3dffe	100/k_souv:100
-cap_q	d0f7acb8	96/r8:37,ito-:1,ito+:1,vrsh:5,q8:52
-cap_q	352f7c8a	95/csh:95
-cap_q	180aa674	96/x8:96
-cap_q	e99ace05	96/x8:96
-cap_q	bf650d4c	97/rsh:83,vrsh:5,axa:9
-cap_q	eb4dd07c	18/qcirk:4,qlaws:14
-cap_q	2180ef80	95/u5:24,u6:27,u7:10,u8:34
-cap_q	d3900334	97/csh:97
-cap_q	5c935f0f	95/q8:95
+cap_q	d0f7acb8	16/ito-:1,ito+:1,rhs:9,vrhs:5
+cap_q	352f7c8a	95/r8:95
+cap_q	180aa674	93/r7:15,r8:30,u1:6,u2:1,u4:7,u5:32,u6:2
+cap_q	bf650d4c	94/rsh:78,vrsh:7,axa:9
+cap_q	eb4dd07c	19/qcirk:4,qlaws:15
+cap_q	2180ef80	93/u6:26,u7:12,u8:55
+cap_q	d3900334	5/r1:2,r3:1,r6:2
 cap_q	0e62cb5e	94/ada:59,jarv:35
+cap_qe	2
 cap__	e1e965ca	1/o_souv:1
 cap__	f6c5e389	100/k_souv:100
 cap__	4c4f593c	100/k_souv:100
@@ -43,4 +37,4 @@ cap__	792ed91e	61/k_ther:61
 cap__	2ef0c507	100/k_souv:100
 cap__	c7766908	10/k_souv:10
 cap_e	49
-k_from	97
+k_from	114
