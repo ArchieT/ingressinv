@@ -1,6 +1,6 @@
 require './reading.rb'
 
-read = read_from(ARGV.empty ? 'inv': ARGV[0]).freeze
+read = read_from(ARGV.empty? ? 'inv': ARGV[0]).freeze
 items = read[1].freeze
 totalitems = read[0].freeze
 realtotalitemsbyvolume = items.collect(&:mass).reduce(0) { |acc, n| acc + n }
