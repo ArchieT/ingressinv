@@ -1,4 +1,4 @@
-1487
+1960
 pfr	1
 beania	1
 r1	1
@@ -26,5 +26,10 @@ cap_q	d3900334	5/r1:2,r3:1,r6:2
 cap_qe	3
 cap__	e1e965ca	1/o_souv:1
 cap__	792ed91e	61/k_ther:61
+cap__	d76fb82d	100/r4:20,r5:20,r6:40,r7:20
+cap__	8895fbad	100/x8:100
+cap__	ee1f4338	100/r7:70,r8:30
+cap__	5d701acb	97/x8:70,u7:20,u8:7
+cap__	6bc00664	71/vrsh:6,axa:8,rhs:1,vrhs:2,vrmh:2,qcirk:28,qlaws:24
 cap_e	46
 k_from	1
