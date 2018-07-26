@@ -9,13 +9,12 @@ r7	60
 r8	53
 x7	133
 x8	480
-la	1
-sbul	7
+ada	20
+jarv	20
+sbul	5
 q3	3
 q4	1
 q8	206
-ada	20
-jarv	20
 cap_k	bfa3dffe	100/k_souv:100
 cap_q	d0f7acb8	16/ito-:1,ito+:1,rhs:9,vrhs:5
 cap_q	352f7c8a	96/r8:96
