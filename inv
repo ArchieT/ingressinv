@@ -1,40 +1,31 @@
-1996
+1487
 pfr	1
 beania	1
 r1	1
 r4	1
 r5	1
-r7	7
-r8	7
-x7	132
+r6	1
+r7	60
+r8	53
+x7	133
 x8	480
-csh	67
-rsh	1
 la	1
 sbul	7
-chs	1
-cmh	1
-rmh	10
-fa	3
-t	3
 q3	3
 q4	1
 q8	206
+ada	20
+jarv	20
 cap_k	bfa3dffe	100/k_souv:100
 cap_q	d0f7acb8	16/ito-:1,ito+:1,rhs:9,vrhs:5
-cap_q	352f7c8a	95/r8:95
+cap_q	352f7c8a	96/r8:96
 cap_q	180aa674	93/r7:15,r8:30,u1:6,u2:1,u4:7,u5:32,u6:2
-cap_q	bf650d4c	94/rsh:78,vrsh:7,axa:9
+cap_q	bf650d4c	54/rsh:38,vrsh:7,axa:9
 cap_q	eb4dd07c	19/qcirk:4,qlaws:15
-cap_q	2180ef80	93/u6:26,u7:12,u8:55
+cap_q	2180ef80	95/u6:26,u7:12,u8:57
 cap_q	d3900334	5/r1:2,r3:1,r6:2
-cap_q	0e62cb5e	94/ada:59,jarv:35
-cap_qe	2
+cap_qe	3
 cap__	e1e965ca	1/o_souv:1
-cap__	f6c5e389	100/k_souv:100
-cap__	4c4f593c	100/k_souv:100
 cap__	792ed91e	61/k_ther:61
-cap__	2ef0c507	100/k_souv:100
-cap__	c7766908	10/k_souv:10
-cap_e	49
-k_from	114
+cap_e	46
+k_from	1
